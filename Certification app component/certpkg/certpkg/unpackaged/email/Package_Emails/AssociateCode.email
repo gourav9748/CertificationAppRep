@@ -1,0 +1,5 @@
+Hello {!Associates__c.Name__c},
+
+Your verification code is: {!Associates__c.Verification_Code__c}.
+
+Please enter above code to proceed.

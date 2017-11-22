@@ -1,0 +1,300 @@
+<aura:component controller="CertificationDetailsCtrl" implements="flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes" access="global">
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    <aura:attribute name="outputEmail" type="String" />
+    <aura:attribute name="Name" type="String" />
+    <aura:attribute name="codePlaceholder" type="String" />
+    <aura:attribute name="truthy" type="Boolean" />
+    <aura:attribute name="btncheckEmail" type="Boolean" />
+    <aura:attribute name="btnSubmit" type="Boolean" />
+    <aura:attribute name="btnSave" type="Boolean" />
+    <aura:attribute name="btnCancel" type="Boolean" />
+    <aura:attribute name="btnRegNewUser" type="Boolean" />
+    <aura:attribute name="btnBackRegUser" type="Boolean" />
+    <aura:attribute name="btnRegNewUserBack" type="Boolean" />
+    <aura:attribute name="selectedCertificate" type="String" />
+    <aura:attribute name="newUserName" type="String" />
+    <aura:attribute name="newUserId" type="String" />
+    <aura:attribute name="newUserEmail" type="String" />
+    <aura:attribute name="newUserLocation" type="String" />
+    <aura:attribute name="verifyAddress" type="String" />
+    <aura:attribute name="currentStatus" type="String" />
+    <aura:attribute name="lstCertDetails" type="Certificate__c[]" />  
+    <aura:attribute name="listCertData" type="CertificateMaster__c[]" />  
+    <aura:attribute name="listData" type="Location__c[]" /> 
+    <aura:attribute name="code" type="String"/> 
+    <aura:attribute name="emailMessage" type="String" default="Email Format is not correct!!"/>
+    <aura:attribute name="codeMessage" type="String"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="/resource/JSNew" rel="script"></link>  
+    <link href="/resource/JQ" rel="script"></link>  
+    <link href="/resource/BSNew/bootstrap-3.3.7-dist/js/bootstrap.min.js" rel="script"></link>
+    <link href="/resource/BSNew/bootstrap-3.3.7-dist/css/bootstrap.min.css" rel="stylesheet"></link>    
+    
+    <!--nav class="navbar navbar-default" style="border:none;background-color:white;height:10%">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <img class="img-responsive" src="/resource/t" style="float:left;width:40%" alt="Chania"/>
+            </div>            
+        </div>
+    </nav-->
+    
+    <nav class="navbar navbar-default navbar-fixed-bottom" style="border:none;background-color:white;height:10%">
+        <div class="container">
+            <p class="text-center"><span class="glyphicon glyphicon-copyright-mark"></span> <small> Cognizant Technologies Solutions Ltd.</small></p>
+        </div>
+    </nav>
+    
+    <div class="container-fluid" style="margin-top:5%;margin-left:10%;margin-right:10%;">
+        
+        <div class="jumbotron text-center" style="background-color:white">
+            <h1>Certification Details</h1>                    
+            <!-- Left-aligned media object -->
+            <!--div class="media">
+                <div class="media-left media-middle">
+                    <img src="/resource/t" class="media-object" style="width:120px"/>
+                </div>
+                <div class="media-body media-middle">
+                    <h2 class="media-heading" style="float:left;">Certification Details</h2>                    
+                </div>
+            </div-->            
+            <!--h1>Certification Details</h1-->
+            <div aura:id="firstPanel">
+                <button type="button" class="btn btn-primary" onclick="{!c.newUser}">New User</button>&nbsp;
+                <button type="button" class="btn btn-primary" onclick="{!c.regUser}">Login</button>
+
+                <!--table class="table">
+                    <tr>
+                        <td style="width:50%;">
+                            <div class="panel panel-primary" style="height:150px">
+                                <div class="panel-heading"><b><center>New User</center></b></div>
+                                <div class="panel-body">Please click below button, if you are a new user:
+                                    <br/>
+                                    <br/>
+                                    <div class="text-center">
+                                        <button type="button" class="btn btn-primary" onclick="{!c.newUser}">Register</button>                                               
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        <td style="width:50%;">
+                            <div class="panel panel-primary" style="height:150px">
+                                <div class="panel-heading"><b><center>Registered User</center></b></div>
+                                <div class="panel-body">Please click below button, if you are registered user:
+                                    <br/>
+                                    <br/>
+                                    <div class="text-center">
+                                        <button type="button" class="btn btn-primary" onclick="{!c.regUser}">Login</button>                                               
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>                    
+                </table-->
+            </div>
+            <div aura:id="registrationPanel">
+                <div class="panel panel-primary">
+                    <div class="panel-heading"><b><center>New User Registration</center></b></div>
+                    <div class="panel-body">
+                        <div aura:id="newUserNamePanel">
+                            <label for="txtName" style="float:left;">Name</label>                            
+                            <ui:inputText class="form-control" maxlength="40" aura:id="txtName" value="{!v.newUserName}"/>                            
+                            <div>
+                                <ui:outputText aura:id="newUserNameAlert" class="text-danger" value="Please provide name!!"></ui:outputText>
+                            </div>
+                        </div>
+                        <br></br>
+                        <div aura:id="newUserIdPanel">
+                            <label for="txtId" style="float:left;">Employee Id</label>                            
+                            <ui:inputNumber class="form-control" format="000000" aura:id="txtId" value="{!v.newUserId}"/>                            
+                            <div>
+                                <ui:outputText aura:id="newUserIdAlert" class="text-danger" value="Please provide Employee Id!!"></ui:outputText>
+                            </div>
+                        </div>
+                        <br></br>
+                        <div aura:id="newUserEmailPanel">
+                            <label for="txtEmail" style="float:left;">Email</label>                            
+                            <ui:inputEmail class="form-control" aura:id="txtEmail" value="{!v.newUserEmail}"/>                            
+                            <div>
+                                <ui:outputText aura:id="newUserEmailAlert" class="text-danger" value="Please provide email address!!"></ui:outputText>
+                            </div>
+                        </div>
+                        <br></br>
+                        <div aura:id="newUserLocationPanel">
+                            <label for="txtLocation" style="float:left;">Location</label>                            
+                            <ui:inputSelect class="form-control" aura:id="txtLocation" value="{!v.newUserLocation}">                                
+                                <ui:inputSelectOption text="--Select--" label="--Select--"></ui:inputSelectOption>
+                                <aura:iteration items="{!v.listData}" var="loc">                        
+                                    <ui:inputSelectOption text="{!loc.Id}" label="{!loc.Name}"/>
+                                </aura:iteration>
+                            </ui:inputSelect>
+                            <div>
+                                <ui:outputText aura:id="newUserLocationAlert" class="text-danger" value="Please provide some value!!"></ui:outputText>
+                            </div>
+                        </div>
+                        <br/>
+                        <div>
+                            <button type="button" disabled="{!v.btnRegNewUser}" class="btn btn-primary" onclick="{!c.registerNewUser}">Submit</button>
+                            &nbsp;<button type="button" disabled="{!v.btnRegNewUserBack}" class="btn btn-primary" onclick="{!c.backNewUser}">Back</button>
+                        </div>                        
+                    </div>
+                </div>                
+            </div>
+            <div aura:id="inputPanel">               
+                <div class="input-group">
+                    <ui:inputNumber placeholder="Enter your Employee Id:" format="000000" aura:id="inputId" class="form-control" required="true"/>                                   
+                    <div class="input-group-btn">
+                        <button class="btn btn-primary test" buttonTitle="Search" disabled="{!v.btncheckEmail}" onclick="{!c.checkEmail1}"> 
+                            <i class="glyphicon glyphicon-search"></i>
+                        </button>
+                    </div>                    
+                </div>
+                
+                <div>
+                    <ui:outputText aura:id="emailAlert" class="text-danger" value="{!v.emailMessage}"></ui:outputText>
+                </div>
+                <br/>
+                <div>
+                    <button type="button" class="btn btn-primary" disabled="{!v.btnBackRegUser}" onclick="{!c.backRegUser}">Back</button>
+                </div>
+            </div>
+            <div aura:id="verificationPanel">
+                <div class="form-horizontal">
+                    <div class="input-group has-success">
+                        <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                        <ui:inputText disabled="true" aura:id="outputEmail1" class="form-control" placeholder="{!v.outputEmail}"/>                                   
+                    </div>
+                </div>
+                <br />
+                <div aura:id="codePanel" class="input-group">
+                    <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+                    <ui:inputNumber class="form-control" placeholder="{!v.codePlaceholder}" format="00000" aura:id="vCode1" value="{!v.code}"></ui:inputNumber>
+                </div>
+                <div>
+                    <ui:outputText aura:id="codeAlert" class="text-danger" value="{!v.codeMessage}"></ui:outputText>
+                </div>
+                <br/>
+                <div>
+                    <button type="button" class="btn btn-primary" disabled="{!v.btnSubmit}" onclick="{!c.Submit}">Submit</button>                                               
+                </div>                
+            </div>
+            <div aura:id="inputForm1">
+                <div class="input-group has-success">
+                    <span class="input-group-addon"><b>Name</b></span>
+                    <ui:inputText disabled="true" class="form-control" placeholder="{!v.Name}"/>                                   
+                </div>
+                <br/>
+                <div class="input-group has-success">
+                    <span class="input-group-addon"><b>Email</b></span>
+                    <ui:inputText disabled="true" class="form-control" placeholder="{!v.outputEmail}"/>                                   
+                </div>
+                <br/>
+                <aura:renderIf isTrue="{!v.truthy}">
+                    <div aura:id="table">
+                        <fieldset class="panel panel-success">
+                            <div class="panel-heading"><b>Saved Details <a class="btn btn-link" target="_blank" href="{!v.verifyAddress}">(Verify)</a></b></div>
+                            <div class="panel-body">
+                                <div class="table-responsive">
+                                    <table class="table" id="myTable">            
+                                        <thead>
+                                            <tr>                                        
+                                                <th><h6><b>Certificate Name</b></h6></th>
+                                                <th><h6><b>Status</b></h6></th>
+                                                <th><h6><b>Completion Date</b></h6></th>
+                                                <th><h6><b>Planned Date</b></h6></th>
+                                                <th><h6><b>Certification Number</b></h6></th>                                               
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <aura:iteration items="{!v.lstCertDetails}" var="cert">
+                                                <tr class="{!if(cert.Status__c=='Completed','info','danger')}">
+                                                    <td><h6>{!cert.CertName__r.Name}</h6></td>
+                                                    <td><h6>{!cert.Status__c}</h6></td>
+                                                    <td><h6>{!cert.Completion_Date__c}</h6></td>
+                                                    <td><h6>{!cert.Planned_Date__c}</h6></td>
+                                                    <td><h6>{!cert.Certificate_Number__c}</h6></td>                                                    
+                                                </tr>
+                                            </aura:iteration>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <aura:set attribute="else">
+                        <p class="bg-danger">No details saved yet!!</p>
+                    </aura:set>
+                </aura:renderIf> 
+                <button type="button" class="btn btn-primary" onclick="{!c.registerNew}">Register New Certificate</button>                                               
+            </div>
+            <div class="panel panel-primary" aura:id="inputForm2">
+                <div class="panel-heading"><b>Register Certificates for {!v.Name}</b></div>
+                <div class="panel-body">
+                    <div aura:id="lstCert">
+                        <label for="selectedCertificate" style="float:left;">Select Certificate:</label>
+                        <ui:inputSelect class="form-control" aura:id="selectedCertificate" change="{!c.onSelectCertChange}">
+                            <ui:inputSelectOption text="--Select--" label="--Select--"></ui:inputSelectOption>
+                            <aura:iteration items="{!v.listCertData}" var="Cert1">                        
+                                <ui:inputSelectOption text="{!Cert1.Id}" label="{!Cert1.Name}"/>
+                            </aura:iteration>
+                        </ui:inputSelect>
+                        <div>
+                            <ui:outputText aura:id="CertSelectAlert" class="text-danger" value="Please select something!!"></ui:outputText>
+                        </div>
+                        <br/>
+                    </div>
+                    
+                    <div aura:id="lstStatus">
+                        <label for="selectedStatus" style="float:left;">Status:</label>
+                        <ui:inputSelect class="form-control" aura:id="selectedStatus" change="{!c.onSelectStatusChange}"/>                                
+                        <div>
+                            <ui:outputText aura:id="statusSelectAlert" class="text-danger" value="Please select something!!"></ui:outputText>
+                        </div>
+                        <br/>
+                    </div>
+                    
+                    <div aura:id="completionPanel">
+                        <div aura:id="compDatePanel">
+                            <label for="certCompletionDate" style="float:left;">Completion Date (dd/mm/yyyy):</label>                            
+                            <ui:inputText class="form-control" aura:id="certCompletionDate"/>                            
+                            <div>
+                                <ui:outputText aura:id="certCompletionDateAlert" class="text-danger" value="Please provide completion date!!"></ui:outputText>
+                            </div>
+                        </div> 
+                        <br/>
+                        <div aura:id="certNumPanel">
+                            <label for="certNum" style="float:left;">Certificate Number:</label>
+                            <ui:inputText class="form-control" aura:id="certNum"></ui:inputText>
+                            <div>
+                                <ui:outputText aura:id="certNumAlert" class="text-danger" value="Please provide certificate number!!"></ui:outputText>
+                            </div>
+                        </div>
+                        <br/>
+                    </div>
+                    <div aura:id="plannedPanel">
+                        <label for="certPlanDate" style="float:left;">Planned Date (dd/mm/yyyy):</label>
+                        <ui:inputText class="form-control" aura:id="certPlanDate"/>
+                        <div>
+                            <ui:outputText aura:id="planDateAlert" class="text-danger" value="Please provide planned date!!"></ui:outputText>
+                        </div>
+                        <br/>
+                    </div>
+                    <div aura:id="notCompletedPanel">
+                    </div>
+                    <div aura:id="notApplicablePanel">
+                    </div> 
+                    <div aura:id="buttonPanel">
+                        <button class="btn btn-primary" disabled="{!v.btnSave}" onclick="{!c.Save}">Save</button> &nbsp;                        
+                        <button class="btn btn-primary" disabled="{!v.btnCancel}" onclick="{!c.cancel}">Cancel</button> 
+                        <!--ui:button class="btn btn-info" aura:id="btnSave" disabled="{!v.btnSave}" press="{!c.Save}">Save</ui:button--> 
+                        <!--ui:button class="btn btn-info" aura:id="btnCancel" disabled="{!v.btnCancel}" press="{!c.cancel}">Back/Cancel</ui:button-->                                               
+                    </div>
+                </div>
+                
+            </div>
+            
+            
+        </div>  
+    </div>
+    
+    
+</aura:component>
